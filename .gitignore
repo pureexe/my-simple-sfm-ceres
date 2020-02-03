@@ -3,3 +3,5 @@ log/
 
 *.db
 *.pyc
+*.ply
+*.npy

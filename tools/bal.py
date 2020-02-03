@@ -1,3 +1,6 @@
+"""
+Convert colmap into BAL format
+"""
 from database import COLMAPDatabase,blob_to_array, pair_id_to_image_ids
 import argparse
 import numpy as np
