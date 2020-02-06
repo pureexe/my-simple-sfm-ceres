@@ -71,13 +71,18 @@ def main(args):
         f.write('%d %d %d\n' %( total_image,keypoint_counter, len(output_track)))
         for o in output_track:
             f.write('%d %d     %lf %lf\n' % (o['image']-1,o['kpt_id'], o['x'], o['y']) )
-    
-        # zero polyfill for backward compatibility
-        for i in range(3 * keypoint_counter + total_image * 9):
-            f.write('0\n')
+        if args.zero_polyfill:
+            # zero polyfill for backward compatibility
+            for i in range(3 * keypoint_counter + total_image * 9):
+                f.write('0\n')
+        else:
+            random_value = np.random.normal(0,1,3 * keypoint_counter + total_image * 9)
+            for value in random_value:
+                f.write('{}\n'.format(value))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='bal.py - convert colmap input to bal style input')
     parser.add_argument('-i', '--input', default='penguinguy_cam004_matched.db', type=str,
         help='database file that already do feature matching')
+    parser.add_argument('-0', '--zero_polyfill', action='store_true')
     main(parser.parse_args())
