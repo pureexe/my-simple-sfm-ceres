@@ -130,7 +130,7 @@ struct StructureFromMotion {
     this->observed_x = observed_x;
     this->observed_y = observed_y;
     this->camera_px = 460.0;
-    this->camera_py = 460.0;
+    this->camera_py = 608.0;
   }
   template <typename T>
   bool operator()(
