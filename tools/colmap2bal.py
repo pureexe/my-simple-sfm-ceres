@@ -70,6 +70,6 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='colmap2bal.py - convert colmap into bal format')
-    parser.add_argument('-i', '--input', type=str, help='spare reconstriction directory', default='D:\\Datasets\\temple\\colmap\\colmap_undistrotion\\sparse')
-    parser.add_argument('-o', '--output', type=str, help='output bal file', default='temple-bal.txt')
+    parser.add_argument('-i', '--input', type=str, help='spare reconstriction directory', default='D:\\Datasets\\temple\\colmap') #\\colmap_undistrotion\\sparse
+    parser.add_argument('-o', '--output', type=str, help='output bal file', default='test.txt')
     main(parser.parse_args())
