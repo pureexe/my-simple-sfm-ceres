@@ -185,8 +185,14 @@ struct SnavelyReprojectionError {
   SnavelyReprojectionError(double observed_x, double observed_y){
       this->observed_x = observed_x;
       this->observed_y = observed_y;
+      //this->camera_px = 0;
+      //this->camera_py = 0;
+      // temple
       this->camera_px = 320;
       this->camera_py = 240;
+      // penguin_one_angle
+      //this->camera_px = 920 / 2;
+      //this->camera_py = 1216 / 2;
   }
   template <typename T>
   bool operator()(const T* const camera,
@@ -242,6 +248,9 @@ int main(int argc, char** argv) {
     std::cerr << "ERROR: unable to open file " << argv[1] << "\n";
     return 1;
   }
+  std::string init_structure_filename = "";
+  init_structure_filename = init_structure_filename + argv[1] + "_init.ply";
+  bal_problem.WriteToPLYFile(init_structure_filename.c_str());
   const double* observations = bal_problem.observations();
   // Create residuals for each observation in the bundle adjustment problem. The
   // parameters for cameras and points are added automatically.
@@ -253,10 +262,12 @@ int main(int argc, char** argv) {
     ceres::CostFunction* cost_function =
         SnavelyReprojectionError::Create(observations[2 * i + 0],
                                          observations[2 * i + 1]);
+    double* camera_ptr = bal_problem.mutable_camera_for_observation(i);
     problem.AddResidualBlock(cost_function,
                              NULL /* squared loss */,
-                             bal_problem.mutable_camera_for_observation(i),
+                             camera_ptr,
                              bal_problem.mutable_point_for_observation(i));
+    //problem.SetParameterBlockConstant(camera_ptr); //fix camera to not update
   }
   // Make Ceres automatically detect the bundle structure. Note that the
   // standard solver, SPARSE_NORMAL_CHOLESKY, also works fine but it is slower
@@ -265,13 +276,13 @@ int main(int argc, char** argv) {
   options.linear_solver_type = ceres::DENSE_SCHUR;
   options.minimizer_progress_to_stdout = true;
   options.max_num_iterations = 10000; // 1000 iteration 
-  options.num_threads = 20; //use 20 thread
-  options.max_solver_time_in_seconds = 3600; // 1 hour
+  options.num_threads = 22; //use 20 thread
+  options.max_solver_time_in_seconds = 3600 * 3; // 1 hour
   ceres::Solver::Summary summary;
   ceres::Solve(options, &problem, &summary);
   std::cout << summary.FullReport() << "\n";
   std::string output_structure_filename = "";
-  output_structure_filename = output_structure_filename + argv[1] + ".ply";
+  output_structure_filename = output_structure_filename + argv[1] + "_final.ply";
   bal_problem.WriteToPLYFile(output_structure_filename.c_str());
   return 0;
 }
