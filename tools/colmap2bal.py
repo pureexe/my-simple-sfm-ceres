@@ -63,6 +63,9 @@ def main(args):
         for cam in camera_info:
             for p in cam:
                 f.write('{}\n'.format(p))
+        # try random-point
+        fake_point = np.random.normal(size=(len(point_info),3))
+        point_info = fake_point
         for point in point_info:
             for p in point:
                 f.write('{}\n'.format(p))
@@ -71,5 +74,5 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='colmap2bal.py - convert colmap into bal format')
     parser.add_argument('-i', '--input', type=str, help='spare reconstriction directory', default='D:\\Datasets\\temple\\colmap') #\\colmap_undistrotion\\sparse
-    parser.add_argument('-o', '--output', type=str, help='output bal file', default='test.txt')
+    parser.add_argument('-o', '--output', type=str, help='output bal file', default='temple-randompoint.txt')
     main(parser.parse_args())
